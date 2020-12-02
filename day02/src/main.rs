@@ -1,6 +1,6 @@
-use crate::day1::{part1, part2};
+use crate::day2::{part1, part2};
 
-mod day1;
+mod day2;
 
 fn main() {
     let input = include_str!("input.txt");
