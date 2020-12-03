@@ -13,13 +13,14 @@ data class GeologyMap(val input: String) {
     }
 }
 
-object  Part01 {
-
-    fun readInput(fileName: String): String
-            = this::class.java.getResource(fileName).readText(StandardCharsets.UTF_8)
+class Part01(val inputFile: String) {
+    private val inputString : String
+    init {
+        inputString = this::class.java.getResource(inputFile).readText(StandardCharsets.UTF_8)
+    }
     
-    fun solve(inputFileName: String, slope: Pair<Int,Int>): Int {
-        val map = GeologyMap(readInput(inputFileName))
+    fun solve(slope: Pair<Int,Int>): Int {
+        val map = GeologyMap(inputString)
 
         val seq = generateSequence(slope, { 
            Pair(it.first+slope.first, it.second+slope.second)

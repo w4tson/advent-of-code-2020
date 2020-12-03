@@ -24,23 +24,24 @@ internal class Aoc03Test {
 
     @Test
     fun testInputShouldHave7Trees() {
-        val result = Part01.solve("/testinput.txt", Pair(3,1))
+        val result = Part01("/testinput.txt").solve( Pair(3,1))
         assertEquals(7, result)
     }
 
     @Test
     fun part1() {
-        val result = Part01.solve("/input.txt", Pair(3,1))
+        val result = Part01("/input.txt").solve( Pair(3,1))
         println(result)
     }
 
     @Test
     fun part2() {
-        val result = arrayOf(Part01.solve("/input.txt",Pair(1,1)), 
-        Part01.solve("/input.txt",Pair(3,1)), 
-        Part01.solve("/input.txt",Pair(5,1)), 
-        Part01.solve("/input.txt",Pair(7,1)), 
-        Part01.solve("/input.txt",Pair(1,2)))
+        val part01 = Part01("/input.txt")
+        val result = arrayOf(part01.solve( Pair(1,1)), 
+        part01.solve(Pair(3,1)), 
+        part01.solve(Pair(5,1)), 
+        part01.solve(Pair(7,1)), 
+        part01.solve(Pair(1,2)))
         println(result.fold(1, { acc, item -> acc*item}))
     }
 }
