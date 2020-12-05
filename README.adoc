@@ -1,0 +1,39 @@
+= Advent of Code 2020 
+
+         * 
+        /|\                  
+       /*|O\
+      /*/|\*\
+     /X/O|*\X\
+    /*/X/|\X\*\
+   /O/*/X|*\O\X\             
+  /*/O/X/|\X\O\*\
+ /X/O/*/X|O\X\*\O\
+/O/X/*/O/|\X\*\O\X\
+        |X|      
+        |X|    
+
+
+
+
+An attempt at solving http://adventofcode.com/2020[Advent of Code 2020] 
+
+|===
+|Puzzle |Language|Solution
+
+|https://adventofcode.com/2020/day/1[Day 1: Report Repair]
+|Go
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day01-go/part01.go[Parts 1 & 2]
+|https://adventofcode.com/2020/day/2[Day 2: Password Philosophy]
+|Rust
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day02-rust/src/day2.rs[Parts 1 & 2]
+|https://adventofcode.com/2020/day/3[Day 3: Toboggan Trajectory]
+|Kotlin
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day03-kotlin/src/main/kotlin/day03/GeologyMap.kt[Parts 1 & 2]
+|https://adventofcode.com/2020/day/4[Day 4: Passport Processing]
+|Python
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day04-python/main.py[Parts 1 & 2]
+|https://adventofcode.com/2020/day/5[Day 5: Binary Boarding]
+|Groovy
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day05-groovy/day05.groovy[Parts 1 & 2]
+|===
