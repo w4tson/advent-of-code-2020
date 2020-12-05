@@ -6,10 +6,10 @@ def binarySearch(instructions, seats, lowerChar ) {
     def n = seats.size /2
     if (seats.size == 1) {
         return seats[0]
-    } else if (instructions[0] == lowerChar) {
-        return binarySearch(instructions.drop(1), seats[0..n-1], lowerChar)
-    } else {
-        return binarySearch(instructions.drop(1), seats[n..seats.size-1], lowerChar)
+    } else  {
+        def lower = instructions[0] == lowerChar ? 0 : n
+        def upper = instructions[0] == lowerChar ? n : seats.size
+        return binarySearch(instructions.drop(1), seats[lower..<upper], lowerChar)
     }
 }
 
