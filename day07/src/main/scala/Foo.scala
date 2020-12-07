@@ -9,15 +9,15 @@ class DayX(input: String) {
     val lines = Source.fromFile(input).getLines.toList
 
     lines.foreach( line => parseLine(line, graph))
-    println(graph)
-    graph.searchPathsTo("shiny gold")
+//    println(graph)
+    graph.part01(graph.getVertex("shiny gold"))
   }
 
 
 
 
 //  muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
-  
+
   def parseLine(line: String, graph: Graph ) = {
     val pattern = "(\\w+ \\w+) bags contain (no other bags|.*).$".r
     for (m <- pattern.findAllMatchIn(line)) {
@@ -34,7 +34,7 @@ class DayX(input: String) {
     }
 
   }
-  
+
   def parseBagInfo(bagsInfo: String): List[(Int, String)] = {
     val pattern = "(\\d+) (\\w+ \\w+) bags?(?:, )?".r
     bagsInfo.split(", ").map(bi => {
@@ -42,7 +42,7 @@ class DayX(input: String) {
         (m.group(1).toInt, m.group(2))
       }.orNull
     }).toList
-    
+
   }
 }
 
@@ -76,25 +76,25 @@ class Graph() {
       .collect{ e => e.from }.toList
   }
 
-  def searchPathsTo(color: String) = {
-    val visited = Map(color -> true)
-    val paths = dfs(color, visited, List())
-    println(paths.size)
+  def part01(vertex: Vertex) = {
+    val visited = Map(vertex -> true)
+    val paths = dfs(getVertex(vertex.color), visited, List(), getAllParents)
+    println(paths.flatMap{ v => v.collect{ (x: Vertex) => x.color} }.distinct.size-1)
   }
 
-  def dfs(color: String, visited: Map[String, Boolean], paths : List[List[String]]):  List[List[String]] = {
-    val visited_updated = visited + (color -> true)
-    val value = getAllParents(color)
+  def dfs(current: Vertex, visited: Map[Vertex, Boolean], paths: List[List[Vertex]], getAdjacentNodes: String => List[Vertex]):  List[List[Vertex]] = {
+    val visited_updated = visited + (current -> true)
+    val parents = getAdjacentNodes(current.color)
     var result = paths
 
-    value.foreach{ c =>
-      val has_visited: Boolean = visited_updated.getOrElse(c.color, false)
+    parents.foreach{ parent =>
+      val has_visited: Boolean = visited_updated.getOrElse(parent, false)
       if (!has_visited) {
-        result = result ++ dfs(c.color, visited_updated, paths)
+        result = result ++ dfs(parent, visited_updated, paths, getAllParents)
       }
     }
 
-    value.size match {
+    parents.size match {
       case 0 => visited_updated.keys.toList::result
       case _ => result
     }
