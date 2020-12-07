@@ -38,5 +38,5 @@ An attempt at solving http://adventofcode.com/2020[Advent of Code 2020]
 |https://github.com/w4tson/advent-of-code-2020/blob/master/day05-groovy/day05.groovy[Parts 1 & 2]
 |https://adventofcode.com/2020/day/7[Day 7: Handy Haversacks]
 |Scala
-|https://github.com/w4tson/advent-of-code-2020/blob/master/day07-scala/src/main/scala/day07.scala[Parts 1 & 2]
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day07-scala/src/main/scala/Day7.scala[Parts 1 & 2]
 |===
