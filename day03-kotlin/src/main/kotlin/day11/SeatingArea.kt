@@ -3,25 +3,46 @@ package day11
 typealias SeatingMap = Array<Array<String>>
 typealias Coord = Pair<Int, Int>
 
-class SeatingArea(val grid: SeatingMap) {
+enum class Strategy {
+    Nearest8,
+    LineOfSight
+}
+
+class SeatingArea(val grid: SeatingMap, val nearbySeatThreshold: Int, val strategy : Strategy) {
     
     private var width : Int = grid[0].size
     private var height : Int = grid.size
     
     fun nextSq(x: Int, y: Int) : String {
         val square = grid[y][x]
-        return  if (square == "L" && surroundingCoords(Coord(x,y)).all(this::emptyAt)) 
+        return  if (square == "L" &&  emptyInAllDirections(x,y))
             "#" 
-        else if (square == "#" && surroundingCoords(Coord(x,y)).count { occupiedAt(it) } > 3)
+        else if (square == "#" && tooManyNeighbours(x,y))
             "L"
         else
             square
+    }
+    
+    fun lineOfSightSequence(init: Coord, vector: Coord) : Sequence<Coord> {
+        return generateSequence(Coord(init.first + vector.first, init.second + vector.second),
+                { (x ,y) -> Coord(x + vector.first, y + vector.second) })
+    }
+    
+    
+    
+    
+    fun emptyInAllDirections(x : Int, y: Int) : Boolean {
+        return surroundingCoords(Coord(x,y)).count(this::occupiedAt) == 0
+    }
+    
+    fun tooManyNeighbours(x : Int, y: Int) : Boolean {
+        return surroundingCoords(Coord(x,y)).count(this::occupiedAt) > nearbySeatThreshold
     }
 
     fun next() : SeatingArea {
         return SeatingArea((0 until height).map{ y ->
             (0 until width).map{ x -> nextSq(x,y) }.toTypedArray()
-        }.toTypedArray())
+        }.toTypedArray(), nearbySeatThreshold, strategy)
     }
     
     fun emptyAt(coord: Coord) : Boolean {
@@ -33,20 +54,24 @@ class SeatingArea(val grid: SeatingMap) {
     }
     
     fun surroundingCoords(pos : Coord) : List<Coord> {
-        val x =  pos.first
-        val y = pos.second
+  
         return listOf(
-                Coord(x,y-1),
-                Coord(x,y+1),
-                Coord(x-1,y),
-                Coord(x+1,y),
-                Coord(x+1,y-1),
-                Coord(x+1,y+1),
-                Coord(x-1,y+1),
-                Coord(x-1,y-1)
-        ).filter(this::withinBounds)
+                Coord(0,-1),
+                Coord(0,+1),
+                Coord(-1,0),
+                Coord(+1,0),
+                Coord(+1,-1),
+                Coord(+1,+1),
+                Coord(-1,+1),
+                Coord(-1,-1)
+        )
+        .map { lineOfSightSequence(pos, it) 
+                .takeWhileInclusive{ (a,b) -> withinBounds(Coord(a,b)) && grid[b][a] == "." }
+                .last()
+        }
+        .filter(this::withinBounds)
     }
-    
+
     fun withinBounds(pos: Coord) : Boolean = pos.first in 0 until width && pos.second >= 0 && pos.second < height
 
     override fun equals(other: Any?): Boolean {
