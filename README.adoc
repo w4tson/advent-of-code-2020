@@ -45,4 +45,13 @@ An attempt at solving http://adventofcode.com/2020[Advent of Code 2020]
 |https://adventofcode.com/2020/day/9[Day 9: Encoding Error]
 |Typescript
 |https://github.com/w4tson/advent-of-code-2020/blob/master/day09-typescript/src/app.ts[Parts 1 & 2]
+|https://adventofcode.com/2020/day/10[Day 10: Adapter Array]
+|Java
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day10-java/src/main/java/aoc/Aoc.java[Parts 1 & 2]
+|https://adventofcode.com/2020/day/11[Day 11: Seating System]
+|Kotlin
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day03-kotlin/src/main/kotlin/day11/Simulation.kt[Parts 1 & 2]
+|https://adventofcode.com/2020/day/12[Day 12: Rain Risk]
+|Kotlin
+|https://github.com/w4tson/advent-of-code-2020/blob/master/day03-kotlin/src/main/kotlin/day12/Day12.kt[Parts 1 & 2]
 |===
