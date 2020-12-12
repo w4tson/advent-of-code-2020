@@ -34,9 +34,6 @@ internal class ShipTest {
         val newLoc = Location(0, 0, Inst.East).rotateClocwise(90)
         println(newLoc)
         println(Location(0, 0, Inst.North).rotateAntiClocwise(180))
-        
-        
-
     }
     
     
