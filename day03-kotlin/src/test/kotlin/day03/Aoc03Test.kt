@@ -6,9 +6,9 @@ import kotlin.test.assertEquals
 
 
 internal class Aoc03Test {
-
     fun readInput(fileName: String): String
             = this::class.java.getResource(fileName).readText(StandardCharsets.UTF_8)
+
 
     @org.junit.Test
     fun testMap() {

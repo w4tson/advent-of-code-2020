@@ -4,6 +4,8 @@ import day11.Coord
 import day11.SeatingArea
 import day11.Simulation
 import day11.Strategy.Nearest8
+import day12.Inst
+import day12.Location
 import org.junit.Test
 import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals
@@ -50,7 +52,10 @@ internal class SeatingAreaTest {
         println(surroundingCoords)
         assertEquals(surroundingCoords.size, 1)
         assertEquals(surroundingCoords[0], Coord(3,1))
+
     }
+    
+    
 
     @Test
     fun part2() {
