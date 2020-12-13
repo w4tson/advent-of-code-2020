@@ -16,3 +16,24 @@ fun <T> List<T>.cycle() : Sequence<T> {
     return repeatRange(this.size).map { this[it] }
 }
 
+fun naturalNumbers() : Sequence<Int> = (0..Int.MAX_VALUE).asSequence()
+
+fun <T> Sequence<T>.takeWhileInclusive(predicate : (T) -> Boolean) : Sequence<T> {
+    var keepGoing: Boolean
+    var prevPred = true
+    return this.takeWhile{
+        keepGoing = prevPred
+        prevPred = predicate(it)
+        keepGoing
+    }
+}
+
+fun <T> List<T>.takeWhileInclusive(predicate : (T) -> Boolean) : List<T> {
+    var keepGoing: Boolean
+    var prevPred = true
+    return this.takeWhile{
+        keepGoing = prevPred
+        prevPred = predicate(it)
+        keepGoing
+    }
+}

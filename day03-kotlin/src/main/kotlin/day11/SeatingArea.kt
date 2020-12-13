@@ -1,5 +1,7 @@
 package day11
 
+import takeWhileInclusive
+
 typealias SeatingMap = Array<Array<String>>
 typealias Coord = Pair<Int, Int>
 

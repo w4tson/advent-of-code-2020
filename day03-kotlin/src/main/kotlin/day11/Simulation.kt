@@ -1,5 +1,7 @@
 package day11
 
+import takeWhileInclusive
+
 class Simulation {
     
     fun solve(seatingArea: SeatingArea) : Int{
@@ -10,12 +12,3 @@ class Simulation {
     }
 }
 
-fun <T> Sequence<T>.takeWhileInclusive(predicate : (T) -> Boolean) : Sequence<T> {
-    var keepGoing: Boolean
-    var prevPred = true
-    return this.takeWhile{
-        keepGoing = prevPred  
-        prevPred = predicate(it)
-        keepGoing
-    }
-}
