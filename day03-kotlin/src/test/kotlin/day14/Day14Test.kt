@@ -22,4 +22,17 @@ class Day14Test {
         val program1 = Program(parse(input))
         println(program1())
     }
+
+    @Test
+    fun testPart2Exxample() {
+        val input = readInput("/day14/day14test.txt")
+        println(UInt36(42).applyMask2(Mask("000000000000000000000000000000X1001X")))
+    }
+
+    @Test
+    fun part02() {
+        val input = readInput("/day14/day14.txt")
+        val program1 = Program(parse(input))
+        println(program1.runV2())
+    }
 }

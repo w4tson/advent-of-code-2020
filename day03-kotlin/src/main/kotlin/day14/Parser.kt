@@ -7,13 +7,24 @@ val r = Regex("mem\\[(\\d+)] = (\\d+)")
 
 sealed class Expr
 data class Mask(val value: String) : Expr()
-data class Assign(val address: Int, val decimalValue: Long) : Expr() {
+data class Assign(val address: Long, val decimalValue: Long) : Expr() {
     
 }
 
 
 
 data class UInt36(val decimal: Long) {
+    
+    fun toDecimal(s :String) : Long {
+        var m = 0L
+        for (i in 0 until 36) {
+            if (s[i] == '1') {
+                m += 1L shl 35 - i
+            }
+        }
+        return m
+    }
+    
     fun toBinary(): String {
         val result = StringBuilder()
         for (i in 36 - 1 downTo 0) {
@@ -34,14 +45,21 @@ data class UInt36(val decimal: Long) {
                 }
             }.joinToString("")
 
-        var m = 0L
-        for (i in 0 until 36) {
-            if (newVal[i] == '1') {
-                m += 1L shl 35 - i
-            }
-        }
-
-        return m
+        return toDecimal(newVal)
+    }
+    
+    fun applyMask2(m: Mask) : List<Long> {
+        return UInt36(decimal).toBinary().zip(m.value)
+            .fold(listOf(""), { acc, item ->
+                when (item.second) {
+                    'X' -> acc.flatMap { listOf(it + '0', it + '1') }
+                    '1' -> acc.map { it + '1' }
+                    '0' -> acc.map { it + item.first } 
+                    else -> throw IllegalStateException("boom")
+                }
+            })
+            .map { toDecimal(it) }
+            .also { println(it) }
     }
 
     override fun toString(): String {
@@ -66,6 +84,6 @@ fun parse(input: String) : List<Expr> = input.lines()
 fun toAssign(s: String) : Assign {
     val match = r.find(s)!!
     val (address, decimal) = match.destructured
-    return Assign(address.toInt(), decimal.toLong())
+    return Assign(address.toLong(), decimal.toLong())
 }
 
