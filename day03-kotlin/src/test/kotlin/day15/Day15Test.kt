@@ -8,10 +8,10 @@ class Day15Test {
 
     @Test
     fun part1Exampe() {
-        assertEquals(436, game(listOf(0, 3, 6)).take(2020).last().last())
-        assertEquals(1, game(listOf(1,3,2)).take(2020).last().last())
-        assertEquals(10, game(listOf(2,1,3)).take(2020).last().last())
-        val result = game(listOf(1,0,16,5,17,4)).take(2020).last().last()
+        assertEquals(436, game2(listOf(0, 3, 6), 2020))
+//        assertEquals(1, game2(listOf(1,3,2),2020))
+//        assertEquals(10, game2(listOf(2,1,3), 2020))
+        val result = game2(listOf(1,0,16,5,17,4), 30000000)
         println(result)
     }
 

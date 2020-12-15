@@ -1,31 +1,30 @@
 package day15
 
-data class ElfTurn(var heard: MutableMap<Long,MutableList<Long>>, var curr: Long, var index :Long) {
-}
 
-fun game2(seed: List<Long>) : Sequence<ElfTurn> {
-    var elf = ElfTurn(mutableMapOf(), 0, 0)
-    return generateSequence(elf, { turn ->
-        var turn = turn;
-        val item = turn.curr
-        val i = turn.index +1
-        when (turn.index) {
-            in seed.indices -> {
-                turn.index += 1
-                val newVal = seed[turn.index.toInt()]
-                turn.heard[i]?.plusAssign(newVal)
-                turn.curr = newVal
-                turn
-            }
-            else -> {
-                val next = if (turn.heard[item]?.size > 1) 0
-                else {
-                    prev.size - prev.dropLast(1).lastIndexOf(item) -1
-                }
-                turn
-            }
+
+
+fun game2(seed: List<Int>, n : Int) : Int {
+    val heard = mutableMapOf<Int, Int>()
+    var curr= 0
+    var index = 0
+        
+    while (index < n) {
+        val item = curr
+        index += 1
+        
+        if (index % 3000000 ==0 ){
+            println(index)
         }
-    })
+
+        val nextVal = when (index) {
+            in 0..seed.size -> seed[index-1]
+            else -> heard[item]?.let { index - it } ?: 0
+        }
+        heard[curr] = index         
+        curr = nextVal 
+
+    }
+    return curr
 }
 
 
