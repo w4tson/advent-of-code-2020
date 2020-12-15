@@ -1,62 +1,61 @@
 package day15
 
-data class ElfTurn(val heard: Map<Int,Int>, val curr: Int, val index :Int) {
-   
-        
-//        fun init(i : Int): ElfGame {
-//            println(i)
-//            previous = i
-//            heard[index] = i
-//            index +=1
-//            return this
-//        }
-//    
-//        fun next() : ElfGame {
-//            
-//            // consider previous
-//            // map(num, last spoken)
-//            
-//           val newNum = heard.get(previous)?.let { index - it } ?: 0
-//           previous = newNum
-//           heard[newNum] = index 
-//            index +=1
-//            
-//            
-//            return this
-//        }
+data class ElfTurn(var heard: MutableMap<Long,MutableList<Long>>, var curr: Long, var index :Long) {
+}
 
-
-
-
+fun game2(seed: List<Long>) : Sequence<ElfTurn> {
+    var elf = ElfTurn(mutableMapOf(), 0, 0)
+    return generateSequence(elf, { turn ->
+        var turn = turn;
+        val item = turn.curr
+        val i = turn.index +1
+        when (turn.index) {
+            in seed.indices -> {
+                turn.index += 1
+                val newVal = seed[turn.index.toInt()]
+                turn.heard[i]?.plusAssign(newVal)
+                turn.curr = newVal
+                turn
+            }
+            else -> {
+                val next = if (turn.heard[item]?.size > 1) 0
+                else {
+                    prev.size - prev.dropLast(1).lastIndexOf(item) -1
+                }
+                turn
+            }
+        }
+    })
 }
 
 
-fun game(startingSeq: List<Int>): Sequence<ElfTurn> {
-    println("asdf")
-    val turn1 = ElfTurn(mapOf(), startingSeq[0], 1) 
-    val s = startingSeq.drop(1).fold(listOf<ElfTurn>(turn1), { acc, it ->
-        val prev = acc.last()
-        val index = prev.index + 1
-        val heard = prev.heard + Pair(it, index)
-        acc + ElfTurn(heard, it, index)
+fun game(seedList: List<Int>): Sequence<List<Int>> {
+    val seed : List<List<Int>> = seedList.drop(1).fold(listOf(listOf(seedList.first())), { acc, it ->
+        val next = if (acc.isNotEmpty()) {
+            val l = acc.last().toMutableList()
+            l.add(it)
+            listOf(l)
+        } else {
+            emptyList()
+        }
+
+        acc + next
     })
 
-    println(s.dropLast(1).asSequence().toList())
-    println(s.last())
-    
-//    return s.asSequence()
-    val sequence = s.dropLast(1).asSequence() + generateSequence(s.last(), { e ->
-        val i = e.index + 1
-        val newNum = e.heard[e.curr]?.let {
-            i - it
-        } ?: 0
+    return generateSequence(listOf<Int>(), { prev ->
+        when (prev.size) {
+            in seedList.indices -> seed[prev.size]
+            else -> {
+                val item = prev.last()
+                val next = if (prev.dropLast(1).count { it == item } < 1) 0
+                else {
+                    prev.size - prev.dropLast(1).lastIndexOf(item) -1
+                }
+                prev + next
 
-        ElfTurn(e.heard + Pair(newNum, i), newNum, i)
-    })
-    println()
-    println()
-    println()
-    return sequence
+            }
+        }
+    }).drop(1)
 }
     
     
