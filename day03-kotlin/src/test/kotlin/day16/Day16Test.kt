@@ -26,6 +26,7 @@ class Day16Test {
 //        val errorRates = day16.errorRates(tickets)
 //        println(errorRates)
 
-        day16.part2(tickets + myTicket)
+        val result = day16.part2(tickets + myTicket)
+        println(result)
     }
 }

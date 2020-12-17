@@ -8,12 +8,13 @@ data class Rule(val name: String, val range1: IntRange, val range2 : IntRange) {
 
 data class Ticket(val values: List<Int>) {}
 
-
-
+data class State(val rules : Map<Rule, Int>, val tickets: List<Ticket>, val visitedTickets : List<Ticket>) {
+    operator fun plus(anotherRule : Map<Rule, Int>) : State = State(rules + anotherRule, tickets, visitedTickets)
+}
 
 class Day16(val rules: List<Rule>){
 
-    var position : MutableMap<Rule, Int> = mutableMapOf()
+    val numOfFields = rules.size
 
     fun errorRates(tickets : List<Ticket>) : Int = tickets.sumBy { errorRate(it) }
     fun validTickets(tickets : List<Ticket>) : List<Ticket> = tickets.filter { valid(it) }
@@ -28,58 +29,44 @@ class Day16(val rules: List<Rule>){
 
     fun matchingRules(value: Int) : List<Rule> = rules.filter { it.satisfiedBy(value) }
 
-
-
     fun part2(tickets : List<Ticket>) : Long {
         val validTickets = validTickets(tickets)
-        val numOfFields = validTickets[0].values.size
 
-        var res = Pair<List<Ticket>, Map<Rule, Int>>(listOf(), mapOf())
-        (rules.indices).forEach {
-            res = calculateFieldPositions(0, validTickets, rules, numOfFields, res.second, res.first)
-            println(res.second.size)
+        var state = State(mapOf(), validTickets, listOf())
+        (rules.indices).forEach { _ ->
+            state = calculateFieldPositions(0, rules, state)
+            println(state.rules.size)
         }
 
-   
-
-        val numbers = res.second.entries.filter { (k, v) -> k.name.startsWith("departure") }
+        return state.rules.entries.filter { (k, _) -> k.name.startsWith("departure") }
             .map { (_, v) -> tickets.last().values[v].toLong() }
-
-        println("numbers = $numbers")
-
-        return numbers.reduce(Long::times)
+            .reduce(Long::times)
     }
 
-    fun calculateFieldPositions(index: Int, tickets: List<Ticket>, rules: List<Rule>, fieldNums : Int, acc: Map<Rule, Int>, ignoredTickets: List<Ticket>) : Pair<List<Ticket>, Map<Rule, Int>> {
-        if (index in acc.values) return calculateFieldPositions(index + 1, tickets, rules, fieldNums, acc, ignoredTickets)
-        when (acc.size == fieldNums || rules.isEmpty() || index == fieldNums) {
-            true -> return Pair(ignoredTickets, acc)
-            else -> {   
+    private fun calculateFieldPositions(index: Int, rules: List<Rule>, state: State) : State {
+        if (index in state.rules.values) return calculateFieldPositions(index + 1, rules, state)
+        return when (state.rules.size == numOfFields || rules.isEmpty() || index == numOfFields) {
+            true -> state
+            else -> {
                 val subRules = rules.filter { rule ->
-                    tickets.filter { !ignoredTickets.contains(it) }
-                        .all {  t -> rule.satisfiedBy(t.values[index]) } and !acc.containsKey(rule)
+                    state.tickets.filter { !state.visitedTickets.contains(it) }
+                        .all {  t -> rule.satisfiedBy(t.values[index]) } and !state.rules.containsKey(rule)
                 }
-                
-                if (subRules.size == 1) return Pair(ignoredTickets, mapOf(Pair(subRules[0], index)) + acc)
-                
-                val newIgnoredTickets = tickets.filter { t-> ignoredTickets.contains(t) or subRules.none { rule -> rule.satisfiedBy(t.values[index]) } }
-                val newAcc = when (subRules.size) {
-                    1 -> mapOf(Pair(subRules[0], index)) + acc
-                    else -> acc
-                }
+                val newVisitedTickets = state.tickets.filter { t-> state.visitedTickets.contains(t) or subRules.none { rule -> rule.satisfiedBy(t.values[index]) } }
 
-                return calculateFieldPositions(index +1, tickets, subRules, fieldNums, newAcc, newIgnoredTickets)
+                when (subRules.size) {
+                    1 -> state + mapOf(Pair(subRules[0], index))
+                    else -> calculateFieldPositions(index +1, subRules, State(state.rules, state.tickets, newVisitedTickets))
+                }
             }
         }
     }
-
 }
 
 
 val r = Regex("([\\w ]+): (\\d+)-(\\d+) or (\\d+)-(\\d+)")
 
 fun toRule(line: String) : Rule {
-//    println(line)
     val match = r.find(line)!!
     val (name, from1, to1, from2, to2) = match.destructured
     return Rule(name, (from1.toInt()..to1.toInt()), (from2.toInt()..to2.toInt()))
