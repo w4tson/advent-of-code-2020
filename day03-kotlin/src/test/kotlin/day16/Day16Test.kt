@@ -14,10 +14,18 @@ class Day16Test {
             .drop(1)
             .map { it.split(",").map(String::toInt).toList() }
             .map{ Ticket(it) }
+
+        val myTicket = parts[1].lines()
+            .drop(1)
+            .map { it.split(",").map(String::toInt).toList() }
+            .map{ Ticket(it) }
+            .first()
+
         val day16 = Day16(rules)
+
 //        val errorRates = day16.errorRates(tickets)
 //        println(errorRates)
 
-        day16.part2(tickets)
+        day16.part2(tickets + myTicket)
     }
 }

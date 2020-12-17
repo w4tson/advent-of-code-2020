@@ -1,8 +1,8 @@
 package day16
 
 data class Rule(val name: String, val range1: IntRange, val range2 : IntRange) {
-    fun matches(value: Int) : Boolean = (value in range1) or (value in range2)
-    fun matches(t: Ticket) : Boolean = t.values.all(this::matches)
+    fun satisfiedBy(value: Int) : Boolean = (value in range1) or (value in range2)
+    fun satisfiedBy(t: Ticket) : Boolean = t.values.all(this::satisfiedBy)
 }
 
 
@@ -26,38 +26,49 @@ class Day16(val rules: List<Rule>){
         return ticket.values.all { matchingRules(it).isNotEmpty() }
     }
 
-    fun matchingRules(value: Int) : List<Rule> = rules.filter { it.matches(value) }
+    fun matchingRules(value: Int) : List<Rule> = rules.filter { it.satisfiedBy(value) }
 
 
 
-    fun part2(tickets : List<Ticket>) : Int{
+    fun part2(tickets : List<Ticket>) : Long {
         val validTickets = validTickets(tickets)
+        val numOfFields = validTickets[0].values.size
 
-        (validTickets[0].values.indices).map { i ->
-            validTickets.map { t ->
-                rules.count { it.matches(t.values[i]) }
-            }.min()
-        }.forEach { println(it) }
+        var res = Pair<List<Ticket>, Map<Rule, Int>>(listOf(), mapOf())
+        (rules.indices).forEach {
+            res = calculateFieldPositions(0, validTickets, rules, numOfFields, res.second, res.first)
+            println(res.second.size)
+        }
 
-//        val min = validTickets.map { t ->
-//            rules.count { it.matches(t.values[i]) }
-//        }.forEach { println(it) }
-//        println(min)
+   
 
+        val numbers = res.second.entries.filter { (k, v) -> k.name.startsWith("departure") }
+            .map { (_, v) -> tickets.last().values[v].toLong() }
 
-        return -1
+        println("numbers = $numbers")
 
+        return numbers.reduce(Long::times)
     }
 
-    fun foo(index: Int, tickets: List<Ticket>) : Pair<Int, Ticket> {
-        when (tickets.size) {
-            1 -> return Pair(index, tickets.first())
-            else -> {
-                (validTickets[0].values.indices).map { i ->
-                    validTickets.map { t ->
-                        rules.count { it.matches(t.values[i]) }
-                    }.min()
-                }.forEach { println(it) }
+    fun calculateFieldPositions(index: Int, tickets: List<Ticket>, rules: List<Rule>, fieldNums : Int, acc: Map<Rule, Int>, ignoredTickets: List<Ticket>) : Pair<List<Ticket>, Map<Rule, Int>> {
+        if (index in acc.values) return calculateFieldPositions(index + 1, tickets, rules, fieldNums, acc, ignoredTickets)
+        when (acc.size == fieldNums || rules.isEmpty() || index == fieldNums) {
+            true -> return Pair(ignoredTickets, acc)
+            else -> {   
+                val subRules = rules.filter { rule ->
+                    tickets.filter { !ignoredTickets.contains(it) }
+                        .all {  t -> rule.satisfiedBy(t.values[index]) } and !acc.containsKey(rule)
+                }
+                
+                if (subRules.size == 1) return Pair(ignoredTickets, mapOf(Pair(subRules[0], index)) + acc)
+                
+                val newIgnoredTickets = tickets.filter { t-> ignoredTickets.contains(t) or subRules.none { rule -> rule.satisfiedBy(t.values[index]) } }
+                val newAcc = when (subRules.size) {
+                    1 -> mapOf(Pair(subRules[0], index)) + acc
+                    else -> acc
+                }
+
+                return calculateFieldPositions(index +1, tickets, subRules, fieldNums, newAcc, newIgnoredTickets)
             }
         }
     }
