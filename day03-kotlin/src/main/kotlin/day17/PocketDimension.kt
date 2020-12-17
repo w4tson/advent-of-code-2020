@@ -1,17 +1,13 @@
 package day17
 
 data class Coord(val x : Int, val y: Int, val z : Int)  {
-    fun surrounding() : List<Coord> {
-        return (z-1..z+1).flatMap { zz ->
-            (y - 1..y + 1).flatMap { yy ->
-                (x - 1..x + 1).map { xx ->
-                    Coord(xx, yy, zz) 
+    fun surrounding() : List<Coord> = (z-1..z+1).flatMap { zz ->
+                (y - 1..y + 1).flatMap { yy ->
+                    (x - 1..x + 1).map { xx ->
+                        Coord(xx, yy, zz) 
+                    }
                 }
-            }
-        }.filter { it != this }
-    }
-    
-    
+            }.filter { it != this }
 }
 
 fun toPocketDimension(init : String) : PocketDimension {
@@ -22,19 +18,13 @@ fun toPocketDimension(init : String) : PocketDimension {
         }}
     }.flatten().toMap()
 
-
     return PocketDimension(m)
 }
 
 class PocketDimension(val map: Map<Coord, Boolean>) {
     
     fun next() : PocketDimension {
-        val minX = map.keys.minBy { it.x }!!.x - 2
-        val maxX = map.keys.maxBy { it.x }!!.x + 2
-        val minY = map.keys.minBy { it.y }!!.y - 2
-        val maxY = map.keys.maxBy { it.y }!!.y + 2
-        val minZ = map.keys.minBy { it.z }!!.z - 2
-        val maxZ = map.keys.maxBy { it.z }!!.z + 2
+        val (minX,maxX,minY,maxY,minZ,maxZ) = minMax(gutter = 2);
 
         val newMap = (minZ..maxZ).flatMap { zz ->
             (minY..maxY).flatMap { yy ->
@@ -51,22 +41,20 @@ class PocketDimension(val map: Map<Coord, Boolean>) {
         return PocketDimension(newMap)
     }
     
-    fun has2Or3ActiveNeighbours(coord: Coord) : Boolean {
-        val b = coord.surrounding().count { map.getOrDefault(it, false) } 
-        return b == 2 || b == 3
-    }
+    fun has2Or3ActiveNeighbours(coord: Coord) : Boolean =
+        coord.surrounding().count { map.getOrDefault(it, false) } in 2..3
 
     fun has3ActiveNeighbours(coord: Coord) : Boolean =
         coord.surrounding().count { map.getOrDefault(it, false) } == 3
     
-    fun minMax() : List<Int>{
+    fun minMax(gutter : Int = 0) : List<Int>{
         return listOf(
-            map.entries.filter { (_,v) -> v }.map{ it.key.x }.min()!!,
-            map.entries.filter { (_,v) -> v }.map{ it.key.x }.max()!!,
-            map.entries.filter { (_,v) -> v }.map{ it.key.y }.min()!!,
-            map.entries.filter { (_,v) -> v }.map{ it.key.y }.max()!!,
-            map.entries.filter { (_,v) -> v }.map{ it.key.z }.min()!!,
-            map.entries.filter { (_,v) -> v }.map{ it.key.z }.max()!!
+            map.entries.filter { (_,v) -> v }.map{ it.key.x }.min()!! - gutter,
+            map.entries.filter { (_,v) -> v }.map{ it.key.x }.max()!! + gutter,
+            map.entries.filter { (_,v) -> v }.map{ it.key.y }.min()!! - gutter,
+            map.entries.filter { (_,v) -> v }.map{ it.key.y }.max()!! + gutter,
+            map.entries.filter { (_,v) -> v }.map{ it.key.z }.min()!! - gutter,
+            map.entries.filter { (_,v) -> v }.map{ it.key.z }.max()!! + gutter
         )
     }
     
