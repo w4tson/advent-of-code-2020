@@ -35,7 +35,7 @@ class Day18Test {
 
     @Test
     fun part2() {
-        val parser = Parser(operatorPrecedence2)
+        val parser = Parser(operatorPrecedence2 )
         assertEquals(669060, evalPostfixx(parser.exec("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))")))
 
         val result = input.lines().map { evalPostfixx(parser.exec(it)) }.sum()
