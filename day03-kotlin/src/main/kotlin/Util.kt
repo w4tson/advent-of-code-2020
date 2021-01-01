@@ -37,3 +37,5 @@ fun <T> List<T>.takeWhileInclusive(predicate : (T) -> Boolean) : List<T> {
         keepGoing
     }
 }
+
+fun Sequence<Long>.multiply() : Long = this.reduce{ acc, i -> acc * i} 
