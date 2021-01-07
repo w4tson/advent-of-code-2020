@@ -38,4 +38,31 @@ fun <T> List<T>.takeWhileInclusive(predicate : (T) -> Boolean) : List<T> {
     }
 }
 
-fun Sequence<Long>.multiply() : Long = this.reduce{ acc, i -> acc * i} 
+fun Sequence<Long>.multiply() : Long = this.reduce { acc, i -> acc * i}
+fun Iterable<Long>.multiply() : Long = this.reduce { acc, i -> acc * i}
+
+
+fun <T> permutations(list : List<T>) : Sequence<List<T>> {
+    return sequence {
+        if (list.size <= 1) yield(list) else {
+            list.indices.forEach { i ->
+                permutations(list.slice(0 until i) + list.slice(i+1 until list.size)).forEach { p -> 
+                    yield(listOf(list[i]) +p)
+                } 
+            }
+        }
+    }
+}
+
+fun String.charList() : List<Char> = this.toCharArray().toList()
+
+fun <T> List<List<T>>.contentDeepEquals(other: List<List<T>>) : Boolean {
+    this.indices.forEach { 
+        val a = this[it]
+        val b = other[it]
+        a.indices.forEach { 
+            if (a[it] == b[it]) return false
+        }
+    }
+    return true
+}
