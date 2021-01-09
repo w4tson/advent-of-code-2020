@@ -1,4 +1,5 @@
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class Util {
     
@@ -65,4 +66,10 @@ fun <T> List<List<T>>.contentDeepEquals(other: List<List<T>>) : Boolean {
         }
     }
     return true
+}
+
+fun <T> List<T>.toDeque() :Deque<T> {
+    val d = ArrayDeque<T>()
+    this.forEach { d.addLast(it) }
+    return d
 }
